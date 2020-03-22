@@ -18,6 +18,16 @@ struct Item: Identifiable {
     var location: String
     var time: String
     var price: Int
+
+    var found: Bool
+}
+
+extension Sequence {
+    func sorted<T: Comparable>(by keyPath: KeyPath<Element, T>) -> [Element] {
+        return sorted { a, b in
+            return a[keyPath: keyPath] < b[keyPath: keyPath]
+        }
+    }
 }
 
 struct Presenter {
@@ -39,7 +49,8 @@ struct Presenter {
                                 seasonality: csv["Seasonality"]!,
                                 location: csv["Name"]!,
                                 time: csv["Time"]!,
-                                price: Int(csv["Price"]!)!
+                                price: Int(csv["Price"]!)!,
+                                found: Defaults.isFound(csv["Name"]!)
                 )
                 items.append(item)
             }
@@ -49,8 +60,33 @@ struct Presenter {
         }
     }
 
-    func sort(_ sortOption: SortOption) {
+    func sort(_ items: [Item], sortOption: SortOption) {
+        switch sortOption {
+        case .price:
+            self.changed.send(items.sorted(by: \.price).reversed() )
+        case .aToZ:
+            self.changed.send(items.sorted(by: \.name))
+        }
+    }
 
+    func filter(_ items: [Item], hideFound: Bool) {
+        if !hideFound {
+            changeData()
+            return
+        }
+        self.changed.send(items.filter {
+            return $0.found == false
+        })
+    }
+}
+
+struct Defaults {
+    static func setFound(_ name: String, isFound: Bool) {
+        UserDefaults.standard.set(isFound, forKey: name)
+    }
+
+    static func isFound(_ name: String) -> Bool {
+        return UserDefaults.standard.bool(forKey: name)
     }
 }
 
@@ -79,9 +115,19 @@ struct ContentView: View {
     }
 }
 
+class ToggleModel: ObservableObject {
+    var hideFound = false {
+        didSet {
+            changed.send(hideFound)
+        }
+    }
+
+    var changed = PassthroughSubject<Bool,Never>()
+}
+
 struct BugList: View {
     @State var bugs = [Item]()
-    @State private var hideFound = false
+    @ObservedObject private var hideFound = ToggleModel()
     @State private var showingSheet = false
 
     var presenter = Presenter(filename: "bugs")
@@ -95,14 +141,16 @@ struct BugList: View {
                         Text("\(bug.price)")
                     }
                     Spacer()
-                    Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 20.0))
-                    .foregroundColor(.green)
-
+                    if bug.found {
+                        Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 20.0))
+                        .foregroundColor(.green)
+                    }
                 }
                 .contextMenu {
                     Button(action: {
-
+                        Defaults.setFound(bug.name, isFound: !bug.found)
+                        self.presenter.changeData()
                     }, label: {
                         Text("Mark as Found")
                     })
@@ -112,9 +160,11 @@ struct BugList: View {
                 self.presenter.changeData()
             }.onReceive(presenter.changed) { (output) in
                 self.bugs = output
+            }.onReceive(hideFound.changed) { (output) in
+                self.presenter.filter(self.bugs, hideFound: output)
             }.navigationBarTitle("Bugs")
             .navigationBarItems(leading:
-            Toggle(isOn: $hideFound, label: { Text("Hide Found") }), trailing:
+                Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
             Button(action: {
                 self.showingSheet = true
             }, label: {
@@ -122,9 +172,9 @@ struct BugList: View {
             }).actionSheet(isPresented: $showingSheet) {
                 ActionSheet(title: Text("Sort Bugs"), buttons: [
                     .default(Text("Price"), action: {
-
+                        self.presenter.sort(self.bugs, sortOption: .price)
                 }), .default(Text("A-Z"), action: {
-
+                    self.presenter.sort(self.bugs, sortOption: .aToZ)
                 }), .cancel()])
                 }
             )
