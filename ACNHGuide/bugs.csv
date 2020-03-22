@@ -1,0 +1,52 @@
+Name,Seasonality,Location,Time,Price
+Agris Butterfly,Apr - Sept,Flying,8 AM - 5 PM,"3000"
+Ant,All year,On rotten fruit and turnips,All day,80
+Bagworm,All year,Shake tree,All day,600
+Centipede,Sept - June,Hit rocks,5 PM - 11 PM,430
+Citrus Long-Horned Beetle,All year,Tree stump,All day,350
+Common Butterfly,Sept - June,Flying,4 AM - 7 PM,160
+Cricket,Sept - Nov,Ground,5 PM - 8 AM,130
+Damselfly,Nov - Feb,Flying,All day,500
+Darner Dragonfly,Apr - Oct,Flying,8 AM - 5 PM,230
+Diving Beetle,May - Sept,River,8 AM - 7 PM,800
+Dung Beetle,Dec - Feb,Snowballs,All day,"2500"
+Earth-Boring Dung Beetle,July - Sept,Ground,All day,300
+Emperor Butterfly,"Dec - Mar, June - Sept",Flying,5 PM - 8 AM,"4000"
+Flea,Apr - Nov,On a flea-infested villager,All day,70
+Fly,All year,On rotten fruit or garbage,All day,60
+Grasshopper,July - Sept,Ground,8 AM - 5 PM,160
+Hermit Crab,All year,Beach,7 PM - 8 AM,"1000"
+Honeybee,Mar - July,Near flowers,8 AM - 5 PM,200
+Ladybug,"Mar - June, Oct",Flowers,8AM - 5PM,200
+Long Locust,Apr - Nov,Ground,8 AM - 7 PM,200
+Madagascan Sunset Moth,Apr - Sept,Flying,8 AM - 4 PM,"2500"
+Man-Faced Stink Bug,Mar - Oct,Flowers,7 PM - 8 AM,"1000"
+Mantis,Mar - Nov,Flowers,8 AM - 5 PM,430
+Migratory Locust,Feb - May,Ground,8 AM - 7 PM,200
+Mole Cricket,Nov - May,Underground,All day,500
+Monarch Butterfly,Sept - Nov,Flying,4 AM - 5 PM,140
+Mosquito,June - Sept,Flying,5 PM - 4 AM,130
+Moth,All year,Lit windows,7 PM - 4 AM,130
+Orchid Mantis,Mar - Nov,Flowers,8 AM - 5 PM,"2400"
+Paper Kite Butterfly,All year,Flying,8 AM - 7 PM,"1000"
+Peacock Butterfly,Mar - June,"Near black, blue, or purple flowers",4 AM - 7 PM,"2500"
+Pill Bug,Sept - June,Hit rocks,11 PM - 4 PM,250
+Pondskater,May - Sept,River,8 AM - 7 PM,130
+Queen Alexandra’s Birdwing,May - Sept,Flying,8 AM - 4 PM,"4000"
+Rainbow Stag,June - Sept,Tree,7 PM - 8 AM,"6000"
+Rajah Brooke’s Birdwing,"Dec - Feb, Apr - Sept","Near black, blue, or purple flowers",8 AM - 5 PM,"2500"
+Red Dragonfly,Sept - Oct,Flying,8 AM - 7 PM,180
+Rosalia Batsei Beetle,May - June,Tree stump,All day,"3000"
+Scorpion,TBD,Ground,Night,0
+Snail,All year,Rock (rain),All day,250
+Spider,All year,Shake tree,7 PM - 8 AM,600
+Stinkbug,Mar - Oct,Flowers,All day,120
+Tarantula,Nov - Apr,Ground,7 PM - 4 AM,"8000"
+Tiger Beetle,Feb - Oct,Ground,All day,"1500"
+Tiger Butterfly,Mar - Sept,Flying,4 AM - 7 PM,240
+Violin Beetle,"May - June, Sept - Nov",Tree stump,All day,450
+Walker Cicada,Aug - Sept,Tree,8 AM - 4 PM,400
+Walking Leaf,July - Sept,Ground,All day,600
+Wasp,All year,Shake tree,All day,"2500"
+Wharf Roach,All year,Beach (rocks),All day,200
+Yellow Butterfly,"Mar - June, Sept - Oct",Flying,4 AM - 7 PM,160
