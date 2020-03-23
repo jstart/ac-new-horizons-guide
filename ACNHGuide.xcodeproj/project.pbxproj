@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		23B60D8C242848FA00727BE8 /* ItemDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B60D8B242848FA00727BE8 /* ItemDataSource.swift */; };
 		23E836292428036B00EF91EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E836282428036B00EF91EC /* AppDelegate.swift */; };
 		23E8362B2428036B00EF91EC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8362A2428036B00EF91EC /* SceneDelegate.swift */; };
 		23E8362D2428036B00EF91EC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8362C2428036B00EF91EC /* ContentView.swift */; };
@@ -19,7 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		23E836252428036B00EF91EC /* ACNHGuide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ACNHGuide.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23B60D8B242848FA00727BE8 /* ItemDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDataSource.swift; sourceTree = "<group>"; };
+		23E836252428036B00EF91EC /* NookBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NookBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E836282428036B00EF91EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		23E8362A2428036B00EF91EC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		23E8362C2428036B00EF91EC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -43,6 +45,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		23B60D8A242848E200727BE8 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				23B60D8B242848FA00727BE8 /* ItemDataSource.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		23E8361C2428036B00EF91EC = {
 			isa = PBXGroup;
 			children = (
@@ -54,7 +64,7 @@
 		23E836262428036B00EF91EC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				23E836252428036B00EF91EC /* ACNHGuide.app */,
+				23E836252428036B00EF91EC /* NookBook.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,6 +77,7 @@
 				23E836282428036B00EF91EC /* AppDelegate.swift */,
 				23E8362A2428036B00EF91EC /* SceneDelegate.swift */,
 				23E8362C2428036B00EF91EC /* ContentView.swift */,
+				23B60D8A242848E200727BE8 /* Data */,
 				23E8362E2428036E00EF91EC /* Assets.xcassets */,
 				23E836332428036E00EF91EC /* LaunchScreen.storyboard */,
 				23E836362428036E00EF91EC /* Info.plist */,
@@ -103,7 +114,7 @@
 				23E8363D2428038E00EF91EC /* CSV */,
 			);
 			productName = ACNHGuide;
-			productReference = 23E836252428036B00EF91EC /* ACNHGuide.app */;
+			productReference = 23E836252428036B00EF91EC /* NookBook.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -163,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23E836292428036B00EF91EC /* AppDelegate.swift in Sources */,
+				23B60D8C242848FA00727BE8 /* ItemDataSource.swift in Sources */,
 				23E8362B2428036B00EF91EC /* SceneDelegate.swift in Sources */,
 				23E8362D2428036B00EF91EC /* ContentView.swift in Sources */,
 			);
@@ -310,7 +322,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = truman.ACNHGuide;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = NookBook;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -330,7 +342,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = truman.ACNHGuide;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = NookBook;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

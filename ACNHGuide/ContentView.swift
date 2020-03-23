@@ -8,87 +8,6 @@
 
 import SwiftUI
 import Combine
-import CSV
-
-struct Item: Identifiable {
-    let id = UUID()
-
-    var name: String
-    var seasonality: String
-    var location: String
-    var time: String
-    var price: Int
-
-    var found: Bool
-}
-
-extension Sequence {
-    func sorted<T: Comparable>(by keyPath: KeyPath<Element, T>) -> [Element] {
-        return sorted { a, b in
-            return a[keyPath: keyPath] < b[keyPath: keyPath]
-        }
-    }
-}
-
-struct Presenter {
-    enum SortOption {
-        case price
-        case aToZ
-    }
-    /*A subject that broadcasts elements to downstream subscribers.*/
-    var filename: String
-    var changed = PassthroughSubject<[Item],Never>()
-
-    func changeData() {
-        DispatchQueue.global().async {
-            let stream = InputStream(fileAtPath: Bundle.main.path(forResource: self.filename, ofType: "csv")!)!
-            let csv = try! CSVReader(stream: stream, hasHeaderRow: true)
-            var items = [Item]()
-            while csv.next() != nil {
-                let item = Item(name: csv["Name"]!,
-                                seasonality: csv["Seasonality"]!,
-                                location: csv["Name"]!,
-                                time: csv["Time"]!,
-                                price: Int(csv["Price"]!)!,
-                                found: Defaults.isFound(csv["Name"]!)
-                )
-                items.append(item)
-            }
-            DispatchQueue.main.async {
-                self.changed.send(items)
-            }
-        }
-    }
-
-    func sort(_ items: [Item], sortOption: SortOption) {
-        switch sortOption {
-        case .price:
-            self.changed.send(items.sorted(by: \.price).reversed() )
-        case .aToZ:
-            self.changed.send(items.sorted(by: \.name))
-        }
-    }
-
-    func filter(_ items: [Item], hideFound: Bool) {
-        if !hideFound {
-            changeData()
-            return
-        }
-        self.changed.send(items.filter {
-            return $0.found == false
-        })
-    }
-}
-
-struct Defaults {
-    static func setFound(_ name: String, isFound: Bool) {
-        UserDefaults.standard.set(isFound, forKey: name)
-    }
-
-    static func isFound(_ name: String) -> Bool {
-        return UserDefaults.standard.bool(forKey: name)
-    }
-}
 
 struct ContentView: View {
     @State private var selection = 0
@@ -98,7 +17,7 @@ struct ContentView: View {
             BugList()
             .tabItem {
                 VStack {
-                    Image("first")
+                    Image(systemName: "ant")
                     Text("Bugs")
                 }
             }
@@ -106,7 +25,7 @@ struct ContentView: View {
             FishList()
             .tabItem {
                 VStack {
-                    Image("second")
+                    Image(systemName: "tortoise")
                     Text("Fish")
                 }
             }
@@ -125,6 +44,26 @@ class ToggleModel: ObservableObject {
     var changed = PassthroughSubject<Bool,Never>()
 }
 
+struct ItemView: View {
+
+    var item: Item
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(item.name)
+                Text("\(item.price)")
+            }
+            Spacer()
+            if item.found {
+                Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 20.0))
+                .foregroundColor(.green)
+            }
+        }
+    }
+}
+
 struct BugList: View {
     @State var bugs = [Item]()
     @ObservedObject private var hideFound = ToggleModel()
@@ -135,18 +74,7 @@ struct BugList: View {
     var body: some View {
         NavigationView {
             List(bugs) { bug in
-                HStack {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text(bug.name)
-                        Text("\(bug.price)")
-                    }
-                    Spacer()
-                    if bug.found {
-                        Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20.0))
-                        .foregroundColor(.green)
-                    }
-                }
+                ItemView(item: bug)
                 .contextMenu {
                     Button(action: {
                         Defaults.setFound(bug.name, isFound: !bug.found)
@@ -157,6 +85,9 @@ struct BugList: View {
                 }
             }
             .onAppear() {
+                if self.bugs.count > 0 {
+                    return
+                }
                 self.presenter.changeData()
             }.onReceive(presenter.changed) { (output) in
                 self.bugs = output
@@ -184,18 +115,50 @@ struct BugList: View {
 
 struct FishList: View {
     @State var fish = [Item]()
+    @ObservedObject private var hideFound = ToggleModel()
+    @State private var showingSheet = false
+
     var presenter = Presenter(filename: "fish")
 
     var body: some View {
         NavigationView {
             List(fish) { fish in
-                Text(fish.name)
+                ItemView(item: fish)
+                .contextMenu {
+                    Button(action: {
+                        Defaults.setFound(fish.name, isFound: !fish.found)
+                        self.presenter.changeData()
+                    }, label: {
+                        Text("Mark as Found")
+                    })
+                }
             }
             .onAppear() {
+                if self.fish.count > 0 {
+                    return
+                }
                 self.presenter.changeData()
             }.onReceive(presenter.changed) { (output) in
                 self.fish = output
+            }.onReceive(hideFound.changed) { (output) in
+                self.presenter.filter(self.fish, hideFound: output)
             }.navigationBarTitle("Fish")
+            .navigationBarItems(
+                leading:
+                Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
+            Button(action: {
+                self.showingSheet = true
+            }, label: {
+                Text("Sort")
+            }).actionSheet(isPresented: $showingSheet) {
+                ActionSheet(title: Text("Sort Fish"), buttons: [
+                    .default(Text("Price"), action: {
+                        self.presenter.sort(self.fish, sortOption: .price)
+                }), .default(Text("A-Z"), action: {
+                    self.presenter.sort(self.fish, sortOption: .aToZ)
+                }), .cancel()])
+                }
+            )
         }
     }
 }
