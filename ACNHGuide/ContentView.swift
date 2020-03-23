@@ -109,6 +109,9 @@ struct BugList: View {
                 }), .cancel()])
                 }
             )
+            HStack {
+                Text("Hi")
+            }
         }
     }
 }
@@ -159,6 +162,9 @@ struct FishList: View {
                 }), .cancel()])
                 }
             )
+            HStack {
+                Text("Hi")
+            }
         }
     }
 }
