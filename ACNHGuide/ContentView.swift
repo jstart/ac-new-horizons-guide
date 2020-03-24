@@ -50,9 +50,12 @@ struct ItemView: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(item.name)
-                Text("\(item.price)")
+            HStack {
+                Image(item.name)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(item.name)
+                    Text("\(item.price)")
+                }
             }
             Spacer()
             if item.found {
