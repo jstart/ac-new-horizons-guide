@@ -314,14 +314,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ACNHGuide/Preview Content\"";
-				DEVELOPMENT_TEAM = UD2ZHCNJF8;
+				DEVELOPMENT_TEAM = PP6S682Z9F;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ACNHGuide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = truman.ACNHGuide;
+				PRODUCT_BUNDLE_IDENTIFIER = truman.ACNH.Guide;
 				PRODUCT_NAME = NookBook;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

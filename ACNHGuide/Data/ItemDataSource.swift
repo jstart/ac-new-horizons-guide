@@ -35,7 +35,6 @@ struct Presenter {
         case price
         case aToZ
     }
-    /*A subject that broadcasts elements to downstream subscribers.*/
     var filename: String
     var changed = PassthroughSubject<[Item],Never>()
 
