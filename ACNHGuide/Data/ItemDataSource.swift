@@ -36,13 +36,13 @@ struct Presenter {
         case aToZ
     }
     var filename: String
-    var changed = PassthroughSubject<[Item],Never>()
+    var changed = PassthroughSubject<[ItemViewModel],Never>()
 
     func changeData() {
         DispatchQueue.global().async {
             let stream = InputStream(fileAtPath: Bundle.main.path(forResource: self.filename, ofType: "csv")!)!
             let csv = try! CSVReader(stream: stream, hasHeaderRow: true)
-            var items = [Item]()
+            var items = [ItemViewModel]()
             while csv.next() != nil {
                 let item = Item(name: csv["Name"]!,
                                 seasonality: csv["Seasonality"]!,
@@ -51,7 +51,7 @@ struct Presenter {
                                 price: Int(csv["Price"]!)!,
                                 found: Defaults.isFound(csv["Name"]!)
                 )
-                items.append(item)
+                items.append(ItemViewModel(item: item))
             }
             DispatchQueue.main.async {
                 self.changed.send(items)
@@ -59,22 +59,22 @@ struct Presenter {
         }
     }
 
-    func sort(_ items: [Item], sortOption: SortOption) {
+    func sort(_ items: [ItemViewModel], sortOption: SortOption) {
         switch sortOption {
         case .price:
-            self.changed.send(items.sorted(by: \.price).reversed() )
+            self.changed.send(items.sorted(by: \.item.price).reversed() )
         case .aToZ:
-            self.changed.send(items.sorted(by: \.name))
+            self.changed.send(items.sorted(by: \.item.name))
         }
     }
 
-    func filter(_ items: [Item], hideFound: Bool) {
+    func filter(_ items: [ItemViewModel], hideFound: Bool) {
         if !hideFound {
             changeData()
             return
         }
         self.changed.send(items.filter {
-            return $0.found == false
+            return $0.item.found == false
         })
     }
 }

@@ -44,9 +44,19 @@ class ToggleModel: ObservableObject {
     var changed = PassthroughSubject<Bool,Never>()
 }
 
-struct ItemView: View {
-
+class ItemViewModel: ObservableObject, Identifiable {
+    var id = UUID()
+    var changed = PassthroughSubject<Item,Never>()
     var item: Item
+
+    init(item: Item) {
+        self.item = item
+    }
+}
+
+struct ItemView: View {
+    @State var viewModel: ItemViewModel
+    @State var item: Item
 
     var body: some View {
         HStack {
@@ -54,7 +64,7 @@ struct ItemView: View {
                 Image(item.name)
                 VStack(alignment: .leading, spacing: 10) {
                     Text(item.name)
-                    Text("\(item.price)")
+                    Text("\(viewModel.item.price)")
                 }
             }
             Spacer()
@@ -63,12 +73,15 @@ struct ItemView: View {
                 .font(.system(size: 20.0))
                 .foregroundColor(.green)
             }
-        }
+        }.onReceive(viewModel.changed, perform: { (output) in
+            self.viewModel.item = output
+            self.item = output
+        })
     }
 }
 
 struct BugList: View {
-    @State var bugs = [Item]()
+    @State var bugs = [ItemViewModel]()
     @ObservedObject private var hideFound = ToggleModel()
     @State private var showingSheet = false
 
@@ -77,11 +90,12 @@ struct BugList: View {
     var body: some View {
         NavigationView {
             List(bugs) { bug in
-                ItemView(item: bug)
+                ItemView(viewModel: bug, item: bug.item)
                 .contextMenu {
                     Button(action: {
-                        Defaults.setFound(bug.name, isFound: !bug.found)
-                        self.presenter.changeData()
+                        Defaults.setFound(bug.item.name, isFound: !bug.item.found)
+                        bug.item.found.toggle()
+                        bug.changed.send(bug.item)
                     }, label: {
                         Text("Mark as Found")
                     })
@@ -117,7 +131,7 @@ struct BugList: View {
 }
 
 struct FishList: View {
-    @State var fish = [Item]()
+    @State var fish = [ItemViewModel]()
     @ObservedObject private var hideFound = ToggleModel()
     @State private var showingSheet = false
 
@@ -126,11 +140,12 @@ struct FishList: View {
     var body: some View {
         NavigationView {
             List(fish) { fish in
-                ItemView(item: fish)
+                ItemView(viewModel: fish, item: fish.item)
                 .contextMenu {
                     Button(action: {
-                        Defaults.setFound(fish.name, isFound: !fish.found)
-                        self.presenter.changeData()
+                        Defaults.setFound(fish.item.name, isFound: !fish.item.found)
+                        fish.item.found.toggle()
+                        fish.changed.send(fish.item)
                     }, label: {
                         Text("Mark as Found")
                     })
