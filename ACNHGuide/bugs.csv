@@ -1,9 +1,11 @@
 Name,Seasonality,Location,Time,Price
-Agris Butterfly,Apr - Sept,Flying,8 AM - 5 PM,"3000"
+Agrias Butterfly,Apr - Sept,Flying,8 AM - 5 PM,"3000"
 Ant,All year,On rotten fruit and turnips,All day,80
+Atlas Moth,April - September,On Trees,7PM-4AM,3000
 Bagworm,All year,Shake tree,All day,600
 Centipede,Sept - June,Hit rocks,5 PM - 11 PM,430
 Citrus Long-Horned Beetle,All year,Tree stump,All day,350
+Common Bluebottle,April - August,Flying,4AM - 7PM,300
 Common Butterfly,Sept - June,Flying,4 AM - 7 PM,160
 Cricket,Sept - Nov,Ground,5 PM - 8 AM,130
 Damselfly,Nov - Feb,Flying,All day,500
@@ -15,6 +17,7 @@ Emperor Butterfly,"Dec - Mar, June - Sept",Flying,5 PM - 8 AM,"4000"
 Flea,Apr - Nov,On a flea-infested villager,All day,70
 Fly,All year,On rotten fruit or garbage,All day,60
 Grasshopper,July - Sept,Ground,8 AM - 5 PM,160
+Great Purple Emperor,May - August,Flying,4am - 7am,3000
 Hermit Crab,All year,Beach,7 PM - 8 AM,"1000"
 Honeybee,Mar - July,Near flowers,8 AM - 5 PM,200
 Ladybug,"Mar - June, Oct",Flowers,8AM - 5PM,200

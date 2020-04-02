@@ -62,9 +62,10 @@ struct ItemView: View {
         HStack {
             HStack {
                 Image(item.name)
+                .frame(width: 64, height: 64, alignment: .center)
                 VStack(alignment: .leading, spacing: 10) {
                     Text(item.name)
-                    Text("\(viewModel.item.price)")
+                    Text("\(item.price) Bells, Available: \(item.time), \(item.seasonality)")
                 }
             }
             Spacer()
@@ -76,7 +77,7 @@ struct ItemView: View {
         }.onReceive(viewModel.changed, perform: { (output) in
             self.viewModel.item = output
             self.item = output
-        })
+        }).contentShape(Rectangle())
     }
 }
 
@@ -91,6 +92,11 @@ struct BugList: View {
         NavigationView {
             List(bugs) { bug in
                 ItemView(viewModel: bug, item: bug.item)
+                .onTapGesture {
+                    Defaults.setFound(bug.item.name, isFound: !bug.item.found)
+                    bug.item.found.toggle()
+                    bug.changed.send(bug.item)
+                }
                 .contextMenu {
                     Button(action: {
                         Defaults.setFound(bug.item.name, isFound: !bug.item.found)
@@ -124,7 +130,7 @@ struct BugList: View {
                 }), .default(Text("A-Z"), action: {
                     self.presenter.sort(self.bugs, sortOption: .aToZ)
                 }), .cancel()])
-                }
+                }.scaledToFill()
             )
         }.phoneOnlyStackNavigationView()
     }
@@ -141,6 +147,11 @@ struct FishList: View {
         NavigationView {
             List(fish) { fish in
                 ItemView(viewModel: fish, item: fish.item)
+                .onTapGesture {
+                    Defaults.setFound(fish.item.name, isFound: !fish.item.found)
+                    fish.item.found.toggle()
+                    fish.changed.send(fish.item)
+                }
                 .contextMenu {
                     Button(action: {
                         Defaults.setFound(fish.item.name, isFound: !fish.item.found)
@@ -183,11 +194,11 @@ struct FishList: View {
 
 extension View {
     func phoneOnlyStackNavigationView() -> some View {
-        if UIDevice.current.userInterfaceIdiom == .phone {
+//        if UIDevice.current.userInterfaceIdiom == .phone {
             return AnyView(self.navigationViewStyle(StackNavigationViewStyle()))
-        } else {
-            return AnyView(self)
-        }
+//        } else {
+//            return AnyView(self)
+//        }
     }
 }
 
