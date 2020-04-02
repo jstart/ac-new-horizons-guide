@@ -26,7 +26,7 @@ Firefly,June,Flying,7 AM - 4 PM,300
 Flea,Apr - Nov,On a flea-infested villager,All day,70
 Fly,All year,On rotten fruit or garbage,All day,60
 Giant Cicada,July - August,On Trees,8 AM - 5 PM,500
-Giant Stag,July - August,11 PM - 8 AM,On Trees,11 PM - 8 AM,10000
+Giant Stag,July - August,On Trees,11 PM - 8 AM,10000
 Giant Water Bug,April - September,On Ponds and Rivers,7 PM - 8 AM,2000
 Giraffe Stag,July - August,On Trees,5 PM - 8 AM,12000
 Goliath Beetle,June - September,On Trees (Coconut),5 PM - 8 AM,8000
@@ -38,7 +38,7 @@ Honeybee,Mar - July,Near flowers,8 AM - 5 PM,200
 Horned Atlas,July - August,On Trees,5 PM - 8 AM,8000
 Horned Dynastid,July - August,On Trees,5 PM - 8 AM,1350
 Horned Elephant,July - August,On Trees,5 PM - 8 AM,8000
-Horned HerculesJuly - August,On Trees,5 PM - 8 AM,12000
+Horned Hercules,July - August,On Trees,5 PM - 8 AM,12000
 Jewel Beetle,April - August,On Tree Stumps,All Day,2400
 Ladybug,"Mar - June, Oct",Flowers,8AM - 5PM,200
 Long Locust,Apr - Nov,Ground,8 AM - 7 PM,200

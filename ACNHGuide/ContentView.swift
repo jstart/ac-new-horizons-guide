@@ -179,9 +179,7 @@ struct FishList: View {
                 self.showingSheet = true
             }, label: {
                 Text("Sort")
-            })
-                #if os(iOS)
-                .actionSheet(isPresented: $showingSheet) {
+            }).actionSheet(isPresented: $showingSheet) {
                 ActionSheet(title: Text("Sort Fish"), buttons: [
                     .default(Text("Price"), action: {
                         self.presenter.sort(self.fish, sortOption: .price)
@@ -189,7 +187,6 @@ struct FishList: View {
                     self.presenter.sort(self.fish, sortOption: .aToZ)
                 }), .cancel()])
                 }
-            #endif
             )
         }.phoneOnlyStackNavigationView()
     }
