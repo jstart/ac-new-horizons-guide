@@ -1,0 +1,8 @@
+app_identifier("truman.ACNH.Guide") # The bundle identifier of your app
+apple_id("cleetruman@gmail.com") # Your Apple email address
+
+itc_team_id("207566") # App Store Connect Team ID
+team_id("PP6S682Z9F") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
