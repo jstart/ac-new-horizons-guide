@@ -9,8 +9,19 @@
 import SwiftUI
 import Combine
 
+class TabModel {
+    @State var selection: Int
+
+    init() {
+        self.selection = 0
+
+    }
+}
+
 struct ContentView: View {
     @State private var selection = 0
+    private var notificationFish = NotificationCenter.default.publisher(for: .fish).compactMap { $0 }
+    private var notificationBug = NotificationCenter.default.publisher(for: .bug).compactMap { $0 }
 
     var body: some View {
         TabView(selection: $selection) {
@@ -30,7 +41,14 @@ struct ContentView: View {
                 }
             }
             .tag(1)
-        }
+        }.onReceive(notificationBug, perform: { _ in
+            self.selection = 0
+            UIApplication.shared.endEditing()
+        })
+        .onReceive(notificationFish, perform: { _ in
+            self.selection = 1
+            UIApplication.shared.endEditing()
+        })
     }
 }
 
@@ -54,7 +72,7 @@ class ItemViewModel: ObservableObject, Identifiable {
     }
 }
 
-class PlatformModel: ObservableObject {
+class PlatformModel {
     @State var isTablet: Bool
 
     init() {
@@ -72,8 +90,10 @@ struct ItemView: View {
                 Image(item.name)
                 .frame(width: 64, height: 64, alignment: .center)
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(item.name)
-                    Text("\(item.price) Bells, Available: \(item.time), \(item.seasonality)")
+                    Text(item.name).font(.system(.title, design: .rounded)).bold()
+                    Text("\(item.price) Bells")
+                    Text("Available: \(item.time), \(item.seasonality)")
+                    Text("\(item.location)")
                 }
             }
             Spacer()
@@ -90,7 +110,7 @@ struct ItemView: View {
 }
 
 struct ItemList: View {
-    @State var bugs = [ItemViewModel]()
+    @State var itemModels = [ItemViewModel]()
     @ObservedObject private var hideFound = ToggleModel()
     @State private var showingSheet = false
     @State private var showingAlert = false
@@ -102,71 +122,74 @@ struct ItemList: View {
     var body: some View {
         NavigationView {
             VStack {
-            SearchView(text: self.$searchTerm)
-            List(bugs.filter {
-                self.searchTerm.isEmpty ? true :    $0.item.name.localizedStandardContains(self.searchTerm) }) { bug in
-                ItemView(viewModel: bug, item: bug.item)
-                .onTapGesture {
-                    Defaults.setFound(bug.item.name, isFound: !bug.item.found)
-                    bug.item.found.toggle()
-                    bug.changed.send(bug.item)
-                }
-                .contextMenu {
-                    Button(action: {
-                        Defaults.setFound(bug.item.name, isFound: !bug.item.found)
-                        bug.item.found.toggle()
-                        bug.changed.send(bug.item)
-                    }, label: {
-                        Text("Mark as Found")
-                    })
-                }
-            }
-            .onAppear() {
-                if self.bugs.count > 0 {
-                    return
-                }
-                self.presenter.changeData()
-            }.onReceive(presenter.changed) { (output) in
-                self.bugs = output
-            }.onReceive(hideFound.changed) { (output) in
-                self.presenter.filter(self.bugs, hideFound: output)
-            }.navigationBarTitle("Bugs")
-            .navigationBarItems(leading:
-                Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
-            Button(action: {
-                if self.platformModel.isTablet {
-                    self.showingAlert.toggle()
-                } else {
-                    self.showingSheet.toggle()
-                }
-            }, label: {
-                Text("Sort")
-            }).actionSheet(isPresented: $showingSheet) {
-                ActionSheet(title: Text("Sort Bugs"), buttons: [
-                    .default(Text("Price"), action: {
-                        self.presenter.sort(self.bugs, sortOption: .price)
-                }), .default(Text("A-Z"), action: {
-                    self.presenter.sort(self.bugs, sortOption: .aToZ)
-                }), .cancel()])
-                }.scaledToFill()
-                .popover(isPresented: $showingAlert, attachmentAnchor: .point(.bottomTrailing), arrowEdge: .top, content: {
-                    VStack {
-                        Spacer()
-                        Button(action: {
-                            self.showingAlert.toggle()
-                            self.presenter.sort(self.bugs, sortOption: .price)
-                            }, label: { Text("  Sort by Price  ") })
-                        Spacer()
-                        Button(action: {
-                            self.showingAlert.toggle()
-                            self.presenter.sort(self.bugs, sortOption: .aToZ)
-                            }, label: { Text("  Sort by A-Z  ") })
-                        Spacer()
+                SearchView(text: self.$searchTerm)
+                List(itemModels.filter {
+                    self.searchTerm.isEmpty ? true :    $0.item.name.localizedStandardContains(self.searchTerm) }) { itemModel in
+                    ItemView(viewModel: itemModel, item: itemModel.item)
+                    .onTapGesture {
+                        Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
+                        itemModel.item.found.toggle()
+                        itemModel.changed.send(itemModel.item)
+                        UIApplication.shared.endEditing()
                     }
-                })
-            )
-        }
-        }.listStyle(DefaultListStyle()).phoneOnlyStackNavigationView()
+//                    .contextMenu {
+//                        Button(action: {
+//                            Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
+//                            itemModel.item.found.toggle()
+//                            itemModel.changed.send(itemModel.item)
+//                        }, label: {
+//                            Text("Mark as Found")
+//                        })
+//                    }
+                }
+                .onAppear() {
+                    if self.itemModels.count > 0 {
+                        return
+                    }
+                    self.presenter.changeData()
+                }.onReceive(presenter.changed) { (output) in
+                    self.itemModels = output
+                    UIApplication.shared.endEditing()
+                }.onReceive(hideFound.changed) { (output) in
+                    UIApplication.shared.endEditing()
+                    self.presenter.filter(self.itemModels, hideFound: output)
+                }.navigationBarTitle(presenter.filename.localizedCapitalized)
+                .navigationBarItems(leading:
+                    Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
+                Button(action: {
+                    if self.platformModel.isTablet {
+                        self.showingAlert.toggle()
+                    } else {
+                        self.showingSheet.toggle()
+                    }
+                }, label: {
+                    Text("Sort")
+                }).actionSheet(isPresented: $showingSheet) {
+                    ActionSheet(title: Text("Sort \(presenter.filename.localizedCapitalized)"), buttons: [
+                        .default(Text("Price"), action: {
+                            self.presenter.sort(self.itemModels, sortOption: .price)
+                    }), .default(Text("A-Z"), action: {
+                        self.presenter.sort(self.itemModels, sortOption: .aToZ)
+                    }), .cancel()])
+                    }.scaledToFill()
+                    .popover(isPresented: $showingAlert, attachmentAnchor: .point(.bottomTrailing), arrowEdge: .top, content: {
+                        VStack {
+                            Spacer()
+                            Button(action: {
+                                self.showingAlert.toggle()
+                                self.presenter.sort(self.itemModels, sortOption: .price)
+                                }, label: { Text("  Sort by Price  ") })
+                            Spacer()
+                            Button(action: {
+                                self.showingAlert.toggle()
+                                self.presenter.sort(self.itemModels, sortOption: .aToZ)
+                                }, label: { Text("  Sort by A-Z  ") })
+                            Spacer()
+                        }
+                    })
+                )
+            }
+        }.phoneOnlyStackNavigationView()
     }
 }
 

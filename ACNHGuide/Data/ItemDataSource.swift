@@ -46,7 +46,7 @@ struct Presenter {
             while csv.next() != nil {
                 let item = Item(name: csv["Name"]!,
                                 seasonality: csv["Seasonality"]!,
-                                location: csv["Name"]!,
+                                location: csv["Location"]!,
                                 time: csv["Time"]!,
                                 price: Int(csv["Price"]!)!,
                                 found: Defaults.isFound(csv["Name"]!)

@@ -29,4 +29,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    override var keyCommands: [UIKeyCommand]? {
+        return [
+            UIKeyCommand(input: "b", modifierFlags: .command, action: #selector(swapTabs(keyCommand:)), discoverabilityTitle: "Open Bug Tab"),
+            UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(swapTabs(keyCommand:)), discoverabilityTitle: "Open Fish Tab")
+        ]
+    }
+
+    @objc func swapTabs(keyCommand: UIKeyCommand) {
+        switch keyCommand.input!.contains("f") {
+        case true:
+            NotificationCenter.default.post(name: .fish, object: nil)
+        case false:
+            NotificationCenter.default.post(name: .bug, object: nil)
+        }
+    }
+
+}
+
+extension Notification.Name {
+    static let fish = Notification.Name("Switch.Fish")
+    static let bug = Notification.Name("Switch.Bug")
 }

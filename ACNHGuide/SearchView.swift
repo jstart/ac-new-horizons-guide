@@ -8,6 +8,12 @@
 
 import SwiftUI
 
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 struct SearchView: UIViewRepresentable {
 
     @Binding var text: String
@@ -23,6 +29,18 @@ struct SearchView: UIViewRepresentable {
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             text = searchText
         }
+
+        func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+            searchBar.resignFirstResponder()
+        }
+
+        func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+            searchBar.resignFirstResponder()
+        }
+
+        @objc public func resignKeyboard() {
+            UIApplication.shared.endEditing()
+        }
     }
 
     func makeCoordinator() -> SearchView.Coordinator {
@@ -31,6 +49,10 @@ struct SearchView: UIViewRepresentable {
 
     func makeUIView(context: UIViewRepresentableContext<SearchView>) -> UISearchBar {
         let searchBar = UISearchBar(frame: .zero)
+        searchBar.returnKeyType = .done
+//        let toolbar = UIToolbar(frame: .zero)
+//        toolbar.items = [UIBarButtonItem(barButtonSystemItem: .done, target: context.coordinator, action: nil)]
+//        searchBar.searchTextField.inputAccessoryView = toolbar
         searchBar.delegate = context.coordinator
         return searchBar
     }
