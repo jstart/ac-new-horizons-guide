@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2379B058243C07A900F53EC3 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2379B057243C07A900F53EC3 /* SearchView.swift */; };
 		23B60D8C242848FA00727BE8 /* ItemDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B60D8B242848FA00727BE8 /* ItemDataSource.swift */; };
 		23E836292428036B00EF91EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E836282428036B00EF91EC /* AppDelegate.swift */; };
 		23E8362B2428036B00EF91EC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8362A2428036B00EF91EC /* SceneDelegate.swift */; };
@@ -20,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2379B056243BE32500F53EC3 /* NookBook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NookBook.entitlements; sourceTree = "<group>"; };
+		2379B057243C07A900F53EC3 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		23B60D8B242848FA00727BE8 /* ItemDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDataSource.swift; sourceTree = "<group>"; };
 		23E836252428036B00EF91EC /* NookBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NookBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E836282428036B00EF91EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -72,11 +75,13 @@
 		23E836272428036B00EF91EC /* ACNHGuide */ = {
 			isa = PBXGroup;
 			children = (
+				2379B056243BE32500F53EC3 /* NookBook.entitlements */,
 				23E8363F242803D400EF91EC /* bugs.csv */,
 				23E83640242803D400EF91EC /* fish.csv */,
 				23E836282428036B00EF91EC /* AppDelegate.swift */,
 				23E8362A2428036B00EF91EC /* SceneDelegate.swift */,
 				23E8362C2428036B00EF91EC /* ContentView.swift */,
+				2379B057243C07A900F53EC3 /* SearchView.swift */,
 				23B60D8A242848E200727BE8 /* Data */,
 				23E8362E2428036E00EF91EC /* Assets.xcassets */,
 				23E836332428036E00EF91EC /* LaunchScreen.storyboard */,
@@ -173,6 +178,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2379B058243C07A900F53EC3 /* SearchView.swift in Sources */,
 				23E836292428036B00EF91EC /* AppDelegate.swift in Sources */,
 				23B60D8C242848FA00727BE8 /* ItemDataSource.swift in Sources */,
 				23E8362B2428036B00EF91EC /* SceneDelegate.swift in Sources */,
@@ -312,8 +318,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ACNHGuide/NookBook.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"ACNHGuide/Preview Content\"";
 				DEVELOPMENT_TEAM = PP6S682Z9F;
 				ENABLE_PREVIEWS = YES;
@@ -323,10 +330,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = truman.ACNH.Guide;
 				PRODUCT_NAME = NookBook;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -334,9 +343,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ACNHGuide/NookBook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"ACNHGuide/Preview Content\"";
 				DEVELOPMENT_TEAM = PP6S682Z9F;
 				ENABLE_PREVIEWS = YES;
@@ -346,11 +356,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = truman.ACNH.Guide;
 				PRODUCT_NAME = NookBook;
 				PROVISIONING_PROFILE_SPECIFIER = "NookBook Release";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

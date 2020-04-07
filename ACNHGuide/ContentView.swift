@@ -14,7 +14,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            BugList()
+            ItemList(presenter: Presenter(filename: "bugs"))
             .tabItem {
                 VStack {
                     Image(systemName: "ant")
@@ -22,7 +22,7 @@ struct ContentView: View {
                 }
             }
             .tag(0)
-            FishList()
+            ItemList(presenter: Presenter(filename: "fish"))
             .tabItem {
                 VStack {
                     Image(systemName: "tortoise")
@@ -54,6 +54,14 @@ class ItemViewModel: ObservableObject, Identifiable {
     }
 }
 
+class PlatformModel: ObservableObject {
+    @State var isTablet: Bool
+
+    init() {
+        self.isTablet = UIDevice.current.userInterfaceIdiom == .pad
+    }
+}
+
 struct ItemView: View {
     @State var viewModel: ItemViewModel
     @State var item: Item
@@ -81,16 +89,22 @@ struct ItemView: View {
     }
 }
 
-struct BugList: View {
+struct ItemList: View {
     @State var bugs = [ItemViewModel]()
     @ObservedObject private var hideFound = ToggleModel()
     @State private var showingSheet = false
+    @State private var showingAlert = false
+    @State private var platformModel = PlatformModel()
+    @State private var searchTerm: String = ""
 
-    var presenter = Presenter(filename: "bugs")
+    var presenter: Presenter
 
     var body: some View {
         NavigationView {
-            List(bugs) { bug in
+            VStack {
+            SearchView(text: self.$searchTerm)
+            List(bugs.filter {
+                self.searchTerm.isEmpty ? true :    $0.item.name.localizedStandardContains(self.searchTerm) }) { bug in
                 ItemView(viewModel: bug, item: bug.item)
                 .onTapGesture {
                     Defaults.setFound(bug.item.name, isFound: !bug.item.found)
@@ -120,7 +134,11 @@ struct BugList: View {
             .navigationBarItems(leading:
                 Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
             Button(action: {
-                self.showingSheet = true
+                if self.platformModel.isTablet {
+                    self.showingAlert.toggle()
+                } else {
+                    self.showingSheet.toggle()
+                }
             }, label: {
                 Text("Sort")
             }).actionSheet(isPresented: $showingSheet) {
@@ -131,64 +149,24 @@ struct BugList: View {
                     self.presenter.sort(self.bugs, sortOption: .aToZ)
                 }), .cancel()])
                 }.scaledToFill()
+                .popover(isPresented: $showingAlert, attachmentAnchor: .point(.bottomTrailing), arrowEdge: .top, content: {
+                    VStack {
+                        Spacer()
+                        Button(action: {
+                            self.showingAlert.toggle()
+                            self.presenter.sort(self.bugs, sortOption: .price)
+                            }, label: { Text("  Sort by Price  ") })
+                        Spacer()
+                        Button(action: {
+                            self.showingAlert.toggle()
+                            self.presenter.sort(self.bugs, sortOption: .aToZ)
+                            }, label: { Text("  Sort by A-Z  ") })
+                        Spacer()
+                    }
+                })
             )
-        }.phoneOnlyStackNavigationView()
-    }
-}
-
-struct FishList: View {
-    @State var fish = [ItemViewModel]()
-    @ObservedObject private var hideFound = ToggleModel()
-    @State private var showingSheet = false
-
-    var presenter = Presenter(filename: "fish")
-
-    var body: some View {
-        NavigationView {
-            List(fish) { fish in
-                ItemView(viewModel: fish, item: fish.item)
-                .onTapGesture {
-                    Defaults.setFound(fish.item.name, isFound: !fish.item.found)
-                    fish.item.found.toggle()
-                    fish.changed.send(fish.item)
-                }
-                .contextMenu {
-                    Button(action: {
-                        Defaults.setFound(fish.item.name, isFound: !fish.item.found)
-                        fish.item.found.toggle()
-                        fish.changed.send(fish.item)
-                    }, label: {
-                        Text("Mark as Found")
-                    })
-                }
-            }
-            .onAppear() {
-                if self.fish.count > 0 {
-                    return
-                }
-                self.presenter.changeData()
-            }.onReceive(presenter.changed) { (output) in
-                self.fish = output
-            }.onReceive(hideFound.changed) { (output) in
-                self.presenter.filter(self.fish, hideFound: output)
-            }.navigationBarTitle("Fish")
-            .navigationBarItems(
-                leading:
-                Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
-            Button(action: {
-                self.showingSheet = true
-            }, label: {
-                Text("Sort")
-            }).actionSheet(isPresented: $showingSheet) {
-                ActionSheet(title: Text("Sort Fish"), buttons: [
-                    .default(Text("Price"), action: {
-                        self.presenter.sort(self.fish, sortOption: .price)
-                }), .default(Text("A-Z"), action: {
-                    self.presenter.sort(self.fish, sortOption: .aToZ)
-                }), .cancel()])
-                }
-            )
-        }.phoneOnlyStackNavigationView()
+        }
+        }.listStyle(DefaultListStyle()).phoneOnlyStackNavigationView()
     }
 }
 
