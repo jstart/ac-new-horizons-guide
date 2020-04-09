@@ -57,15 +57,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-    override var keyCommands: [UIKeyCommand]? {
-        return [
-            UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(swapTabs), discoverabilityTitle: "Open Fish Tab"),
-            UIKeyCommand(input: "b", modifierFlags: .command, action: #selector(swapTabs), discoverabilityTitle: "Open Bug Tab")
-        ]
-    }
-
-    @objc func swapTabs(_ keyCommand: UIKeyCommand) {
-        
-    }
 }

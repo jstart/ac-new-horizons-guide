@@ -157,6 +157,7 @@ struct ItemList: View {
                 .navigationBarItems(leading:
                     Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
                 Button(action: {
+                    UIApplication.shared.endEditing()
                     if self.platformModel.isTablet {
                         self.showingAlert.toggle()
                     } else {

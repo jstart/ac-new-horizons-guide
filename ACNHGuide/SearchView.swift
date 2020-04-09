@@ -18,7 +18,7 @@ struct SearchView: UIViewRepresentable {
 
     @Binding var text: String
 
-    class Coordinator: NSObject, UISearchBarDelegate {
+    class Coordinator: NSObject, UISearchBarDelegate, UITextFieldDelegate {
 
         @Binding var text: String
 
@@ -28,6 +28,9 @@ struct SearchView: UIViewRepresentable {
 
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             text = searchText
+            if text.count == 0 {
+                searchBar.resignFirstResponder()
+            }
         }
 
         func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -36,6 +39,12 @@ struct SearchView: UIViewRepresentable {
 
         func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
             searchBar.resignFirstResponder()
+        }
+
+        func textFieldShouldClear(_ textField: UITextField) -> Bool {
+            textField.resignFirstResponder()
+            textField.text = ""
+            return false
         }
 
         @objc public func resignKeyboard() {
@@ -54,6 +63,7 @@ struct SearchView: UIViewRepresentable {
 //        toolbar.items = [UIBarButtonItem(barButtonSystemItem: .done, target: context.coordinator, action: nil)]
 //        searchBar.searchTextField.inputAccessoryView = toolbar
         searchBar.delegate = context.coordinator
+        searchBar.searchTextField.delegate = context.coordinator
         return searchBar
     }
 
