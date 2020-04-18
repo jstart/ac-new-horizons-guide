@@ -28,6 +28,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             self.window = window
             window.makeKeyAndVisible()
         }
+
+        UINavigationBar.appearance().largeTitleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.white]
+
+        UINavigationBar.appearance().titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.white]
+
+        UINavigationBar.appearance().barTintColor = UIColor(named: "grass")
+        UINavigationBar.appearance().backgroundColor = UIColor(named: "grass")
+        UINavigationBar.appearance().tintColor = .white
+        UINavigationBar.appearance().prefersLargeTitles = false
+
+        UITableView.appearance().backgroundColor = UIColor(named: "dialogue")
+        UITableViewCell.appearance().backgroundColor = UIColor(named: "dialogue")
+        UITableView.appearance().tableFooterView = UIView()
+
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor(named: "dialogue")
+        UISearchBar.appearance().backgroundColor = UIColor(named: "dialogue")
+
+        UITabBar.appearance().unselectedItemTintColor = UIColor(named: "TabLabel")
+        UITabBar.appearance().barTintColor = UIColor(named: "grass")
+        UITabBar.appearance().backgroundColor = UIColor(named: "grass")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

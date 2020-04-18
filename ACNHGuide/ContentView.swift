@@ -23,6 +23,12 @@ struct ContentView: View {
     private var notificationFish = NotificationCenter.default.publisher(for: .fish).compactMap { $0 }
     private var notificationBug = NotificationCenter.default.publisher(for: .bug).compactMap { $0 }
 
+    init() {
+//        UITabBar.appearance().barTintColor = UIColor(named: "BG")
+//        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(named: "UI Text")!], for: .normal)
+//        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor(named: "UI Text")!], for: .selected)
+    }
+
     var body: some View {
         TabView(selection: $selection) {
             ItemList(presenter: Presenter(filename: "bugs"))
@@ -41,7 +47,7 @@ struct ContentView: View {
                 }
             }
             .tag(1)
-        }.onReceive(notificationBug, perform: { _ in
+        }.accentColor(Color("UI Text")).onReceive(notificationBug, perform: { _ in
             self.selection = 0
             UIApplication.shared.endEditing()
         })
@@ -116,15 +122,16 @@ struct ItemList: View {
     @State private var showingAlert = false
     @State private var platformModel = PlatformModel()
     @State private var searchTerm: String = ""
+    @State private var offset = CGSize.zero
 
     var presenter: Presenter
 
     var body: some View {
         NavigationView {
             VStack {
-                SearchView(text: self.$searchTerm)
+                SearchView(text: $searchTerm)
                 List(itemModels.filter {
-                    self.searchTerm.isEmpty ? true :    $0.item.name.localizedStandardContains(self.searchTerm) }) { itemModel in
+                    self.searchTerm.isEmpty ? true : $0.item.name.localizedStandardContains(self.searchTerm) }) { itemModel in
                     ItemView(viewModel: itemModel, item: itemModel.item)
                     .onTapGesture {
                         Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
@@ -153,7 +160,7 @@ struct ItemList: View {
                 }.onReceive(hideFound.changed) { (output) in
                     UIApplication.shared.endEditing()
                     self.presenter.filter(self.itemModels, hideFound: output)
-                }.navigationBarTitle(presenter.filename.localizedCapitalized)
+                }.navigationBarTitle(Text(presenter.filename.localizedCapitalized), displayMode: .inline)//Hidden(true)//.navigationBarTitle(presenter.filename.localizedCapitalized)
                 .navigationBarItems(leading:
                     Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
                 Button(action: {
