@@ -13,5 +13,8 @@ jobs:
   SpellCheck:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Spelling
-        uses: UnicornGlobal/spellcheck-github-actions@master
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+    - name: Check Spelling
+      uses: UnicornGlobal/spellcheck-github-actions@master
