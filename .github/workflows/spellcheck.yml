@@ -1,0 +1,17 @@
+name: SpellCheck
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/spellcheck.yml'
+      - 'spellcheck.yaml'
+      - '**/*.swift'
+      - '**/*.md'
+      - '**/*.strings'
+
+jobs:
+  SpellCheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Spellcheck Action
+        uses: rojopolis/spellcheck-github-actions@0.2.0

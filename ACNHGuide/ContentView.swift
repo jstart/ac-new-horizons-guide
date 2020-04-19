@@ -31,7 +31,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            ItemList(presenter: Presenter(filename: "bugs"))
+            AltItemList(presenter: Presenter(filename: "bugs"))
             .tabItem {
                 VStack {
                     Image(systemName: "ant")
@@ -39,7 +39,7 @@ struct ContentView: View {
                 }
             }
             .tag(0)
-            ItemList(presenter: Presenter(filename: "fish"))
+            AltItemList(presenter: Presenter(filename: "fish"))
             .tabItem {
                 VStack {
                     Image(systemName: "tortoise")
@@ -78,6 +78,16 @@ class ItemViewModel: ObservableObject, Identifiable {
     }
 }
 
+class AltItemViewModel: ObservableObject, Identifiable {
+    var id = UUID()
+    var changed = PassthroughSubject<AltItem,Never>()
+    var item: AltItem
+
+    init(item: AltItem) {
+        self.item = item
+    }
+}
+
 class PlatformModel {
     @State var isTablet: Bool
 
@@ -108,6 +118,35 @@ struct ItemView: View {
                 .font(.system(size: 20.0))
                 .foregroundColor(.green)
             }
+        }.onReceive(viewModel.changed, perform: { (output) in
+            self.viewModel.item = output
+            self.item = output
+        }).contentShape(Rectangle())
+    }
+}
+
+struct AltItemView: View {
+    @State var viewModel: AltItemViewModel
+    @State var item: AltItem
+
+    var body: some View {
+        HStack {
+            HStack {
+                Image(item.nameString)
+                .frame(width: 64, height: 64, alignment: .center)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(item.nameString).font(.system(.title, design: .rounded)).bold()
+                    Text("\(item.price) Bells")
+                    Text("Available: \(item.availability.time), \(item.availability.monthNorthern)")
+                    Text("\(item.availability.location)")
+                }
+            }
+            Spacer()
+//            if item.found {
+//                Image(systemName: "checkmark.circle.fill")
+//                .font(.system(size: 20.0))
+//                .foregroundColor(.green)
+//            }
         }.onReceive(viewModel.changed, perform: { (output) in
             self.viewModel.item = output
             self.item = output
@@ -186,12 +225,98 @@ struct ItemList: View {
                             Button(action: {
                                 self.showingAlert.toggle()
                                 self.presenter.sort(self.itemModels, sortOption: .price)
-                                }, label: { Text("  Sort by Price  ") })
+                                }, label: { Text("\n            Sort by Price            \n") })
                             Spacer()
                             Button(action: {
                                 self.showingAlert.toggle()
                                 self.presenter.sort(self.itemModels, sortOption: .aToZ)
-                                }, label: { Text("  Sort by A-Z  ") })
+                                }, label: { Text("\n            Sort by A-Z            \n") })
+                            Spacer()
+                        }
+                    })
+                )
+            }
+        }.phoneOnlyStackNavigationView()
+    }
+}
+
+struct AltItemList: View {
+    @State var itemModels = [AltItemViewModel]()
+    @ObservedObject private var hideFound = ToggleModel()
+    @State private var showingSheet = false
+    @State private var showingAlert = false
+    @State private var platformModel = PlatformModel()
+    @State private var searchTerm: String = ""
+    @State private var offset = CGSize.zero
+
+    var presenter: Presenter
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                SearchView(text: $searchTerm)
+                List(itemModels.filter {
+                    self.searchTerm.isEmpty ? true : $0.item.nameString.localizedStandardContains(self.searchTerm) }) { itemModel in
+                    AltItemView(viewModel: itemModel, item: itemModel.item)
+                    .onTapGesture {
+//                        Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
+//                        itemModel.item.found.toggle()
+                        itemModel.changed.send(itemModel.item)
+                        UIApplication.shared.endEditing()
+                    }
+//                    .contextMenu {
+//                        Button(action: {
+//                            Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
+//                            itemModel.item.found.toggle()
+//                            itemModel.changed.send(itemModel.item)
+//                        }, label: {
+//                            Text("Mark as Found")
+//                        })
+//                    }
+                }
+                .onAppear() {
+                    if self.itemModels.count > 0 {
+                        return
+                    }
+                    self.presenter.changeAltData()
+                }.onReceive(presenter.altChanged) { (output) in
+                    self.itemModels = output
+                    UIApplication.shared.endEditing()
+                }.onReceive(hideFound.changed) { (output) in
+//                    UIApplication.shared.endEditing()
+//                    self.presenter.filter(self.itemModels, hideFound: output)
+                }.navigationBarTitle(Text(presenter.filename.localizedCapitalized), displayMode: .inline)//Hidden(true)//.navigationBarTitle(presenter.filename.localizedCapitalized)
+                .navigationBarItems(leading:
+                    Toggle(isOn: $hideFound.hideFound, label: { Text("Hide Found") }), trailing:
+                Button(action: {
+                    UIApplication.shared.endEditing()
+                    if self.platformModel.isTablet {
+                        self.showingAlert.toggle()
+                    } else {
+                        self.showingSheet.toggle()
+                    }
+                }, label: {
+                    Text("Sort")
+                }).actionSheet(isPresented: $showingSheet) {
+                    ActionSheet(title: Text("Sort \(presenter.filename.localizedCapitalized)"), buttons: [
+                        .default(Text("Price"), action: {
+//                            self.presenter.sort(self.itemModels, sortOption: .price)
+                    }), .default(Text("A-Z"), action: {
+//                        self.presenter.sort(self.itemModels, sortOption: .aToZ)
+                    }), .cancel()])
+                    }.scaledToFill()
+                    .popover(isPresented: $showingAlert, attachmentAnchor: .point(.bottomTrailing), arrowEdge: .top, content: {
+                        VStack {
+                            Spacer()
+                            Button(action: {
+                                self.showingAlert.toggle()
+//                                self.presenter.sort(self.itemModels, sortOption: .price)
+                                }, label: { Text("\n            Sort by Price            \n") })
+                            Spacer()
+                            Button(action: {
+                                self.showingAlert.toggle()
+//                                self.presenter.sort(self.itemModels, sortOption: .aToZ)
+                                }, label: { Text("\n            Sort by A-Z            \n") })
                             Spacer()
                         }
                     })
