@@ -128,16 +128,20 @@ struct ItemView: View {
 struct AltItemView: View {
     @State var viewModel: AltItemViewModel
     @State var item: AltItem
+    var type: String
 
     var body: some View {
         HStack {
             HStack {
-                Image(item.nameString)
-                .frame(width: 64, height: 64, alignment: .center)
+                Image("\(type)_\(item.id)")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 64, height: 64, alignment: .center)
                 VStack(alignment: .leading, spacing: 10) {
                     Text(item.nameString).font(.system(.title, design: .rounded)).bold()
                     Text("\(item.price) Bells")
-                    Text("Available: \(item.availability.time), \(item.availability.monthNorthern)")
+                    Text(item.availability.availabilityText)
+                    .lineLimit(nil)
                     Text("\(item.availability.location)")
                 }
             }
@@ -178,15 +182,6 @@ struct ItemList: View {
                         itemModel.changed.send(itemModel.item)
                         UIApplication.shared.endEditing()
                     }
-//                    .contextMenu {
-//                        Button(action: {
-//                            Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
-//                            itemModel.item.found.toggle()
-//                            itemModel.changed.send(itemModel.item)
-//                        }, label: {
-//                            Text("Mark as Found")
-//                        })
-//                    }
                 }
                 .onAppear() {
                     if self.itemModels.count > 0 {
@@ -257,7 +252,7 @@ struct AltItemList: View {
                 SearchView(text: $searchTerm)
                 List(itemModels.filter {
                     self.searchTerm.isEmpty ? true : $0.item.nameString.localizedStandardContains(self.searchTerm) }) { itemModel in
-                    AltItemView(viewModel: itemModel, item: itemModel.item)
+                        AltItemView(viewModel: itemModel, item: itemModel.item, type: self.presenter.filename)
                     .onTapGesture {
 //                        Defaults.setFound(itemModel.item.name, isFound: !itemModel.item.found)
 //                        itemModel.item.found.toggle()

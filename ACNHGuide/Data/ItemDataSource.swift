@@ -18,6 +18,7 @@ struct AltItem: Codable {
     let museumPhrase: String
     let availability: Availability
     let name: Name
+//    let shadow: String
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -27,6 +28,7 @@ struct AltItem: Codable {
         case museumPhrase = "museum-phrase"
         case availability
         case name
+//        case shadow
     }
 
     var nameString: String {
@@ -57,6 +59,30 @@ struct Availability: Codable {
         case isAllYear
         case location
         case rarity
+    }
+
+    var availabilityText: String {
+        var text = "Availability: "
+        if isAllDay {
+            text += "All Day, "
+        } else {
+            text += "\(time), "
+        }
+
+        if isAllYear {
+            text += "All Year"
+        } else {
+            text += monthNorthern
+        }
+        return text
+    }
+
+    var monthNorthernText: String {
+        let months = monthNorthern.split(separator: "-")
+        let df = DateFormatter()
+        let first = df.monthSymbols[Int("\(months.first!)")! - 1]
+        let second = df.monthSymbols[Int("\(months.last!)")! - 1]
+        return "\(first) - \(second)"
     }
 }
 
