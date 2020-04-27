@@ -20,6 +20,6 @@ platform :ios do
   lane :release do
     increment_build_number(xcodeproj: "ACNHGuide.xcodeproj")
     build_app(scheme: "ACNHGuide")
-    upload_to_app_store(skip_metadata: false, run_precheck_before_submit: false, skip_screenshots: true, precheck_include_in_app_purchases: false, submit_for_review: true, automatic_release: true, individual_metadata_items:['release_notes'])
+    upload_to_app_store(skip_metadata: false, run_precheck_before_submit: false, skip_screenshots: true, precheck_include_in_app_purchases: false, submit_for_review: true, automatic_release: true)
   end
 end
